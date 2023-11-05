@@ -1,0 +1,7 @@
+D:\Github\SocialWebsite\Algorithms\Algorithms\bin\Debug\Algorithms.exe.config
+D:\Github\SocialWebsite\Algorithms\Algorithms\bin\Debug\Algorithms.exe
+D:\Github\SocialWebsite\Algorithms\Algorithms\bin\Debug\Algorithms.pdb
+D:\Github\SocialWebsite\Algorithms\Algorithms\obj\Debug\Algorithms.csproj.AssemblyReference.cache
+D:\Github\SocialWebsite\Algorithms\Algorithms\obj\Debug\Algorithms.csproj.CoreCompileInputs.cache
+D:\Github\SocialWebsite\Algorithms\Algorithms\obj\Debug\Algorithms.exe
+D:\Github\SocialWebsite\Algorithms\Algorithms\obj\Debug\Algorithms.pdb

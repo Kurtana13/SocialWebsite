@@ -1,0 +1,14 @@
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\bin\Debug\net7.0\SocialWebsite.Models.deps.json
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\bin\Debug\net7.0\SocialWebsite.Models.dll
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\bin\Debug\net7.0\SocialWebsite.Models.pdb
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\SocialWebsite.Models.csproj.AssemblyReference.cache
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\SocialWebsite.Models.GeneratedMSBuildEditorConfig.editorconfig
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\SocialWebsite.Models.AssemblyInfoInputs.cache
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\SocialWebsite.Models.AssemblyInfo.cs
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\SocialWebsite.Models.csproj.CoreCompileInputs.cache
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\SocialWebsite.Models.dll
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\refint\SocialWebsite.Models.dll
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\SocialWebsite.Models.pdb
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\ref\SocialWebsite.Models.dll
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\bin\Debug\net7.0\SocialWebsite.Models.runtimeconfig.json
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Models\obj\Debug\net7.0\SocialWebsite.Models.genruntimeconfig.cache

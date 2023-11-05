@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "xccG8MgGW2H/RgfxNDTmYONjMKdB55C9aj82571FEDc=",
+  "Source": "SocialWebsite.Api",
+  "BasePath": "_content/SocialWebsite.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

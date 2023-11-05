@@ -10,9 +10,8 @@ namespace SocialWebsite.Models
     public class Group
     {
         public int Id { get; set; }
-        [Required(ErrorMessage ="Please Enter Name of The Group")]
-        public string Name { get; set; }
-        public string Creator { get; set; }
+        public string Name { get; set; } = null!;
+        public string Creator { get; set; } = null!;
 
         public virtual ICollection<User>? Users { get; set;}
         public virtual ICollection<Post>? Posts { get; set; }

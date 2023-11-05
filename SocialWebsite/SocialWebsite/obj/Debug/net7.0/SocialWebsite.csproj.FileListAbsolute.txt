@@ -1,0 +1,7 @@
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite\obj\Debug\net7.0\SocialWebsite.GeneratedMSBuildEditorConfig.editorconfig
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite\obj\Debug\net7.0\SocialWebsite.AssemblyInfoInputs.cache
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite\obj\Debug\net7.0\SocialWebsite.AssemblyInfo.cs
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite\obj\Debug\net7.0\SocialWebsite.csproj.CoreCompileInputs.cache
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite\obj\Debug\net7.0\SocialWebsite.MvcApplicationPartsAssemblyInfo.cache
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite\obj\Debug\net7.0\SocialWebsite.RazorAssemblyInfo.cache
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite\obj\Debug\net7.0\SocialWebsite.RazorAssemblyInfo.cs

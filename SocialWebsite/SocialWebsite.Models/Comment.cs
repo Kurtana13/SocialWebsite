@@ -13,17 +13,14 @@ namespace SocialWebsite.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Please enter text")]
         public string? Content { get; set; }
 
-        [Display(Name = "User ID")]
         public int PostId { get; set; }
         [ForeignKey(nameof(PostId))]
-        public virtual Post? Post { get; set; }
+        public virtual Post Post { get; set; } = null!;
 
-        [Display(Name = "User ID")]
         public int UserId { get; set; }
         [ForeignKey(nameof(UserId))]
-        public virtual User? User { get; set; }
+        public virtual User User { get; set; } = null!;
     }
 }

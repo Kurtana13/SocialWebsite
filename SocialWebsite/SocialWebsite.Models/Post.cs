@@ -10,18 +10,15 @@ namespace SocialWebsite.Models
 {
     public class Post
     {
-        [Key]
         public int Id { get; set; }
+        public string Title { get; set; } = null!;
+        public string Content { get; set; } = null!;
 
-        [Required(ErrorMessage = "Please enter text!")]
-        public string? Title { get; set; }
-        public string? Content { get; set; }
+        public int? GroupId { get; set; }
+        public virtual Group? Group { get; set; }
 
-        [Display(Name = "User ID")]
-        [Required(ErrorMessage = "Please enter user ID!")]
         public int UserId { get; set; }
-        [ForeignKey(nameof(UserId))]
-        public virtual User? User { get; set; }
+        public virtual User User { get; set; } = null!;
 
         public virtual ICollection<Comment>? Comments { get; set; }
     }
