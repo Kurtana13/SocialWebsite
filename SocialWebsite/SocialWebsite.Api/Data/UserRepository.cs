@@ -1,4 +1,5 @@
-﻿using SocialWebsite.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SocialWebsite.Models;
 
 namespace SocialWebsite.Api.Data
 {
@@ -24,19 +25,30 @@ namespace SocialWebsite.Api.Data
 
         public async Task<bool> UpdateUser(User user)
         {
-            User? user = await _context.Users.FindAsync(user.Id);
-            if (user == null)
-            {
-                return false;
-            }
             _context.Users.Update(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> CreateUser(User user)
+        public async Task<User> CreateUser(User user)
+        {
+            if (await _context.Users.Where(x => x.UserName == user.UserName).FirstOrDefaultAsync() != null)
+            {
+                return null;
+            }
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public Task<User> GetUserById(int id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            return await _context.Users.ToListAsync();
         }
     }
 }
