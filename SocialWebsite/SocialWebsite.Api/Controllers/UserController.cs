@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocialWebsite.Api.Data;
+using SocialWebsite.Api.Repositories;
 using SocialWebsite.Models;
 using System.Reflection.Metadata.Ecma335;
 
@@ -10,18 +11,20 @@ namespace SocialWebsite.Api.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
-        public UserController(IUserRepository userRepository)
+        private readonly IGenericRepository<User> _genericRepository;
+        public UserController(IUserRepository userRepository, IGenericRepository<User> genericRepository)
         {
             _userRepository = userRepository;
+            _genericRepository = genericRepository;
         }
 
         [Route("[action]")]
         [HttpGet]
-        public async Task<ActionResult> GetUsers()
+        public async Task<ActionResult> GetAll()
         {
             try
             {
-                return Ok(await _userRepository.GetUsers());
+                return Ok(await _genericRepository.Get());
             }
             catch (Exception)
             {
@@ -29,7 +32,26 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
+        [Route("[action]/{id}")]
+        [HttpGet]
+        public async Task<ActionResult> GetUser(int id)
+        {
+            try
+            {
+                var result = await _genericRepository.GetById(id);
+                if(result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data");
+            }
+        }
 
+        [Route("[action]")]
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(User user)
         {
@@ -48,8 +70,14 @@ namespace SocialWebsite.Api.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating user");
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+
+            base.Dispose(disposing);
         }
     }
 }

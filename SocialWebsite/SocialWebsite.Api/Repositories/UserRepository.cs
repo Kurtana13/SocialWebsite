@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialWebsite.Api.Data;
 using SocialWebsite.Models;
 
-namespace SocialWebsite.Api.Data
+namespace SocialWebsite.Api.Repositories
 {
     public class UserRepository : IUserRepository
     {
@@ -36,6 +37,7 @@ namespace SocialWebsite.Api.Data
             {
                 return null;
             }
+            Console.WriteLine(user.UserName);
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;
