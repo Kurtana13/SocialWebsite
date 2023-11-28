@@ -77,7 +77,7 @@ namespace SocialWebsite.Api.Controllers
 
         protected override void Dispose(bool disposing)
         {
-
+            unitOfWork.Dispose();
             base.Dispose(disposing);
         }
     }
