@@ -9,7 +9,7 @@ namespace SocialWebsite.Api.Repositories
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProporties = "");
         public Task<T> GetById(object id);
-        public void Insert(T entity);
+        public Task<T> Create(T entity);
         public void Delete(T entity);
         public Task Delete(object id);
         public void Update(T entity);

@@ -37,7 +37,6 @@ namespace SocialWebsite.Api.Repositories
             {
                 return null;
             }
-            Console.WriteLine(user.UserName);
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;
@@ -51,6 +50,26 @@ namespace SocialWebsite.Api.Repositories
         public async Task<IEnumerable<User>> GetUsers()
         {
             return await _context.Users.ToListAsync();
+        }
+
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialWebsite.Api.Repositories;
+using SocialWebsite.Models;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -48,9 +49,17 @@ namespace SocialWebsite.Api.Data
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual void Insert(T entity)
+        public virtual async Task<T> Create(T entity)
         {
-            _dbSet.Add(entity);
+            if(entity.GetType() == typeof(User))
+            {
+                if (await _context.Users.Where(x => x.UserName == (entity as User).UserName).FirstOrDefaultAsync() != null)
+                {
+                    return null;
+                }
+            }
+            await _dbSet.AddAsync(entity);
+            return entity;
         }
 
         public virtual void Delete(T entity)

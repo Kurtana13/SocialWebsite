@@ -2,7 +2,7 @@
 
 namespace SocialWebsite.Api.Data
 {
-    public interface IUserRepository
+    public interface IUserRepository : IDisposable
     {
         public Task<bool> DeleteUser(string userName);
         public Task<bool> UpdateUser(User user);

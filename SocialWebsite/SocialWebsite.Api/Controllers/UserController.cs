@@ -10,12 +10,12 @@ namespace SocialWebsite.Api.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IGenericRepository<User> _genericRepository;
-        public UserController(IUserRepository userRepository, IGenericRepository<User> genericRepository)
+        private UnitOfWork unitOfWork;
+        private readonly IUserRepository? _userRepository;
+
+        public UserController(ApplicationDbContext context)
         {
-            _userRepository = userRepository;
-            _genericRepository = genericRepository;
+          unitOfWork = new UnitOfWork(context);
         }
 
         [Route("[action]")]
@@ -24,7 +24,7 @@ namespace SocialWebsite.Api.Controllers
         {
             try
             {
-                return Ok(await _genericRepository.Get());
+                return Ok(await unitOfWork.UserRepository.Get());
             }
             catch (Exception)
             {
@@ -38,7 +38,7 @@ namespace SocialWebsite.Api.Controllers
         {
             try
             {
-                var result = await _genericRepository.GetById(id);
+                var result = await unitOfWork.UserRepository.GetById(id);
                 if(result == null)
                 {
                     return NotFound();
@@ -61,12 +61,13 @@ namespace SocialWebsite.Api.Controllers
                 {
                     return BadRequest();
                 }
-                var createdUser = await _userRepository.CreateUser(user);
+                var createdUser = await unitOfWork.UserRepository.Create(user);
                 if(createdUser == null)
                 {
                     return BadRequest("User Already Exists");
                 }
-                return CreatedAtAction("CreateMethod", new { Id = createdUser.Id }, createdUser);
+                await unitOfWork.Save();
+                return CreatedAtAction(nameof(GetUser), new { Id = createdUser.Id }, createdUser);
             }
             catch (Exception)
             {

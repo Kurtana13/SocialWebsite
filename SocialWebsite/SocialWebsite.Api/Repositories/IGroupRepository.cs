@@ -2,7 +2,7 @@
 
 namespace SocialWebsite.Api.Data
 {
-    public interface IGroupRepository
+    public interface IGroupRepository : IDisposable
     {
         public Task<bool> AddUser(User user);
     }
