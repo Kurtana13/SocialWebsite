@@ -10,8 +10,9 @@ namespace SocialWebsite.Api.Repositories
             string includeProporties = "");
         public Task<T> GetById(object id);
         public Task<T> Create(T entity);
-        public void Delete(T entity);
-        public Task Delete(object id);
+        public Task<T> Delete(T entity);
+        public Task<T> DeleteById(object id);
         public void Update(T entity);
+        public Task Save();
     }
 }

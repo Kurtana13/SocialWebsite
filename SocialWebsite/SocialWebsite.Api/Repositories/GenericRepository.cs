@@ -8,13 +8,18 @@ namespace SocialWebsite.Api.Data
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _context;
-        private DbSet<T> _dbSet;
+        public ApplicationDbContext _context;
+        protected DbSet<T> _dbSet;
 
         public GenericRepository(ApplicationDbContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
+        }
+
+        public GenericRepository(IUnitOfWork<ApplicationDbContext> unitOfWork)
+            :this(unitOfWork.Context)
+        {
         }
         public virtual async Task<IEnumerable<T>> Get(
             Expression<Func<T, bool>> filter = null,
@@ -51,36 +56,61 @@ namespace SocialWebsite.Api.Data
 
         public virtual async Task<T> Create(T entity)
         {
-            if(entity.GetType() == typeof(User))
+            if(entity == null)
             {
-                if (await _context.Users.Where(x => x.UserName == (entity as User).UserName).FirstOrDefaultAsync() != null)
-                {
-                    return null;
-                }
+                return null;
             }
             await _dbSet.AddAsync(entity);
             return entity;
         }
 
-        public virtual void Delete(T entity)
+        public virtual async Task<T> Delete(T entity)
         {
             if(_context.Entry(entity).State == EntityState.Detached)
             {
                 _dbSet.Attach(entity);
             }
             _dbSet.Remove(entity);
+            return entity;
         }
 
-        public virtual async Task Delete(object id)
+        public virtual async Task<T> DeleteById(object id)
         {
             T ?entityToDelete = await _dbSet.FindAsync(id);
+            if(entityToDelete == null) { return null; }
             _dbSet.Remove(entityToDelete);
+            return entityToDelete;
         }
 
         public virtual void Update(T entity)
         {
             _dbSet.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public async Task Save()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

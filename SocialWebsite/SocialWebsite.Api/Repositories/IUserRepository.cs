@@ -1,11 +1,10 @@
-﻿using SocialWebsite.Models;
+﻿using SocialWebsite.Api.Repositories;
+using SocialWebsite.Models;
 
 namespace SocialWebsite.Api.Data
 {
-    public interface IUserRepository : IDisposable
+    public interface IUserRepository : IGenericRepository<User>
     {
-        public Task<bool> DeleteUser(string userName);
-        public Task<bool> UpdateUser(User user);
-        public Task<User> CreateUser(User user);
+        new public Task<User> Create(User user);
     }
 }

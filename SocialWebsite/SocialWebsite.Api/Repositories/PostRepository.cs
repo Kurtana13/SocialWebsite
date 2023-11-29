@@ -3,12 +3,12 @@ using SocialWebsite.Models;
 
 namespace SocialWebsite.Api.Repositories
 {
-    public class PostRepository : IPostRepository
+    public class PostRepository : GenericRepository<Post>, IPostRepository
     {
-        private readonly ApplicationDbContext _context;
-        public PostRepository(ApplicationDbContext context)
+        public PostRepository(ApplicationDbContext applicationDbContext) :
+            base(applicationDbContext)
         {
-            _context = context;
+
         }
 
         public Task<bool> AddPost(Post post)

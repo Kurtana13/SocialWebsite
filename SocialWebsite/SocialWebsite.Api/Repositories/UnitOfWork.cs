@@ -4,44 +4,18 @@ using System.Runtime.CompilerServices;
 
 namespace SocialWebsite.Api.Repositories
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork<TContext> : IDisposable, IUnitOfWork<TContext> where TContext : ApplicationDbContext
     {
-        private readonly ApplicationDbContext _context;
-        private GenericRepository<User>? userRepository;
-        private GenericRepository<Post>? postRepository;
+        public TContext Context { get; }
 
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(TContext context)
         {
-            _context = context;
-        }
-
-        public GenericRepository<User> UserRepository
-        {
-            get
-            {
-                if (this.userRepository == null)
-                {
-                    this.userRepository = new GenericRepository<User>(_context);
-                }
-                return userRepository;
-            }
-        }
-
-        public GenericRepository<Post> PostRepository
-        {
-            get
-            {
-                if (this.postRepository == null)
-                {
-                    this.postRepository = new GenericRepository<Post>(_context);
-                }
-                return postRepository;
-            }
+            Context = context;
         }
 
         public async Task Save()
         {
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
 
         private bool disposed = false;
@@ -52,7 +26,7 @@ namespace SocialWebsite.Api.Repositories
             {
                 if (disposing)
                 {
-                    _context.Dispose();
+                    Context.Dispose();
                 }
             }
             this.disposed = true;
