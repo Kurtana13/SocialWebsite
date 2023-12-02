@@ -82,10 +82,15 @@ namespace SocialWebsite.Api.Data
             return entityToDelete;
         }
 
-        public virtual void Update(T entity)
+        public virtual async Task<T> Update(T entity,T newEntity)
         {
             _dbSet.Attach(entity);
+            if(_dbSet.Entry(entity).State == EntityState.Unchanged)
+            {
+                _dbSet.Entry(entity).CurrentValues.SetValues(newEntity);
+            }
             _context.Entry(entity).State = EntityState.Modified;
+            return newEntity;
         }
 
         public async Task Save()

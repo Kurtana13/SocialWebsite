@@ -2,7 +2,7 @@
 
 namespace SocialWebsite.Api.Repositories
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T>: IDisposable where T : class
     {
         public Task<IEnumerable<T>> Get(
             Expression<Func<T, bool>> filter = null,
@@ -12,7 +12,7 @@ namespace SocialWebsite.Api.Repositories
         public Task<T> Create(T entity);
         public Task<T> Delete(T entity);
         public Task<T> DeleteById(object id);
-        public void Update(T entity);
+        public Task<T> Update(T entity,T newEntity);
         public Task Save();
     }
 }

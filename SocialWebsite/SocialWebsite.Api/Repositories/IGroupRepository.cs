@@ -1,9 +1,12 @@
-﻿using SocialWebsite.Models;
+﻿using SocialWebsite.Api.Repositories;
+using SocialWebsite.Models;
 
 namespace SocialWebsite.Api.Data
 {
-    public interface IGroupRepository : IDisposable
+    public interface IGroupRepository : IGenericRepository<Group>
     {
-        public Task<bool> AddUser(User user);
+        Task<User> AddUser(User user);
+        //Gets all posts from the group
+        Task<IEnumerable<Post>> GetAllPosts();
     }
 }

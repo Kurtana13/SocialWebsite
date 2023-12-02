@@ -98,11 +98,46 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
+        [Route("[action]")]
+        [HttpDelete]
+        public async Task<ActionResult<User>> DeleteUser([FromBody]User user)
+        {
+            try
+            {
+                var result = await userRepository.GetById(user.Id);
+                if (result == null)
+                {
+                    return BadRequest();
+                }
+                await userRepository.Delete(result);
+                await unitOfWork.Save();
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting user");
+            }
+        }
+
         [Route("[action]/{id}")]
         [HttpPut]
         public async Task<ActionResult<User>> UpdateUser([FromRoute]int id, [FromBody] User user)
         {
-            return user;
+            try
+            {
+                var result = await userRepository.GetById(user.Id);
+                if(result == null)
+                {
+                    return BadRequest();
+                }
+                await userRepository.Update(result,user);
+                await unitOfWork.Save();
+                return Ok(result);
+            }
+            catch(Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating user");
+            }
         }
 
         protected override void Dispose(bool disposing)
