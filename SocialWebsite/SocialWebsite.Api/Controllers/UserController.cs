@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocialWebsite.Api.Data;
 using SocialWebsite.Api.Repositories;
+using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
 using System.Reflection.Metadata.Ecma335;
 
@@ -130,7 +131,7 @@ namespace SocialWebsite.Api.Controllers
                 {
                     return BadRequest();
                 }
-                await userRepository.Update(result,user);
+                await userRepository.Put(result,user);
                 await unitOfWork.Save();
                 return Ok(result);
             }

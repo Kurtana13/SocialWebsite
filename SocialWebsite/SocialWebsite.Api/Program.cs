@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SocialWebsite.Api.Data;
 using SocialWebsite.Api.Repositories;
+using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
 
 var builder = WebApplication.CreateBuilder(args);

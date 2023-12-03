@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialWebsite.Api.Data;
+using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
 
 namespace SocialWebsite.Api.Repositories

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SocialWebsite.Api.Repositories;
+using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -74,6 +74,16 @@ namespace SocialWebsite.Api.Data
             return entity;
         }
 
+        public virtual async Task<IEnumerable<T>> Delete(Expression<Func<T, bool>> filter)
+        {
+            IEnumerable<T> result = await Get(filter);
+            foreach(var entity in result)
+            {
+                await Delete(entity);
+            }
+            return result;
+        }
+
         public virtual async Task<T> DeleteById(object id)
         {
             T ?entityToDelete = await _dbSet.FindAsync(id);
@@ -82,7 +92,7 @@ namespace SocialWebsite.Api.Data
             return entityToDelete;
         }
 
-        public virtual async Task<T> Update(T entity,T newEntity)
+        public virtual async Task<T> Put(T entity,T newEntity)
         {
             _dbSet.Attach(entity);
             if(_dbSet.Entry(entity).State == EntityState.Unchanged)
