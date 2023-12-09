@@ -1,4 +1,5 @@
-﻿using SocialWebsite.Api.Data;
+﻿using Microsoft.Identity.Client;
+using SocialWebsite.Api.Data;
 using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
 
@@ -18,6 +19,12 @@ namespace SocialWebsite.Api.Repositories
            : base(unitOfWork)
         {
 
+        }
+
+        public async Task<Post> CreateGroupPost(int groupId,Post post)
+        {
+            post.GroupId = groupId;
+            return await Create(post);
         }
 
         public Task<IEnumerable<Comment>> GetAllComment()

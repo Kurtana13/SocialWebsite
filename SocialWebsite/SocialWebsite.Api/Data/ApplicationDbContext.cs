@@ -26,16 +26,19 @@ namespace SocialWebsite.Api.Data
                 //User-Group
                 b.HasMany(u => u.Groups)
                 .WithMany(g => g.Users)
-                .UsingEntity<UserGroup>();
+                .UsingEntity<UserGroup>(
+                    l => l.HasOne<Group>().WithMany().HasForeignKey(e=>e.GroupId).OnDelete(DeleteBehavior.Restrict),
+                    r => r.HasOne<User>().WithMany().HasForeignKey(e=>e.UserId).OnDelete(DeleteBehavior.Cascade));
 
                 //User-Post
                 b.HasMany(u => u.Posts)
-                .WithOne(p => p.User);
+                .WithOne(p => p.User)
+                .OnDelete(DeleteBehavior.Cascade);
 
                 //User-Comment
                 b.HasMany(u => u.Comments)
                 .WithOne(c => c.User)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             });
 
@@ -46,7 +49,8 @@ namespace SocialWebsite.Api.Data
                 //Relationships
                 //Group-Post
                 b.HasMany(g => g.Posts)
-                .WithOne(p => p.Group);
+                .WithOne(p => p.Group)
+                .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Post>(b =>
@@ -57,7 +61,7 @@ namespace SocialWebsite.Api.Data
                 //Post-Comment
                 b.HasMany(p => p.Comments)
                 .WithOne(c => c.Post)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Comment>(b =>
@@ -74,13 +78,13 @@ namespace SocialWebsite.Api.Data
                 b.HasOne(f => f.User)
                     .WithMany()
                     .HasForeignKey(n => n.UserId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 // Configure the foreign key for the FriendUser navigation property
                 b.HasOne(f => f.FriendUser)
                     .WithMany()
                     .HasForeignKey(n => n.FriendId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Notification>(b =>
@@ -88,17 +92,18 @@ namespace SocialWebsite.Api.Data
                 // Configure the composite primary key
                 b.HasKey(n => new { n.RecipientId, n.SenderId });
 
+
                 // Configure the foreign key for the Recipient navigation property
                 b.HasOne(n => n.Recipient)
                     .WithMany()
                     .HasForeignKey(n => n.RecipientId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 // Configure the foreign key for the Sender navigation property
                 b.HasOne(n => n.Sender)
                     .WithMany()
                     .HasForeignKey(n => n.SenderId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
 

@@ -8,6 +8,11 @@ namespace SocialWebsite.Models
 {
     public class UserGroup
     {
+        public UserGroup(int groupId,int userId)
+        {
+            this.GroupId = groupId;
+            this.UserId = userId;
+        }
         public int UserId { get; set; }
         public int GroupId { get; set; }
 

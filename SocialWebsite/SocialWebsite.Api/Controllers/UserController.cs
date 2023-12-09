@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using SocialWebsite.Api.Data;
 using SocialWebsite.Api.Repositories;
 using SocialWebsite.Api.Repositories.IRepositories;
@@ -13,11 +14,15 @@ namespace SocialWebsite.Api.Controllers
     {
         private IUnitOfWork<ApplicationDbContext> unitOfWork;
         private IUserRepository userRepository;
+        private UserManager<User> userManager;
+        private SignInManager<User> signInManager;
 
-        public UserController(ApplicationDbContext context)
+        public UserController(ApplicationDbContext context,UserManager<User> userManager,SignInManager<User> signInManager)
         {
             unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
             userRepository = new UserRepository(unitOfWork);
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         [Route("[action]")]

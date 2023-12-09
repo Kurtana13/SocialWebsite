@@ -11,16 +11,20 @@ namespace SocialWebsite.Api.Controllers
     public class GroupController : Controller
     {
         private IUnitOfWork<ApplicationDbContext> unitOfWork;
+        private IUserRepository userRepository;
         private IGroupRepository groupRepository;
         private IPostRepository postRepository;
         private ICommentRepository commentRepository;
+        private IUserGroupRepository userGroupRepository;
 
         public GroupController(ApplicationDbContext context)
         {
             unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
+            userRepository = new UserRepository(unitOfWork);
             groupRepository = new GroupRepository(unitOfWork);
             postRepository = new PostRepository(unitOfWork);
             commentRepository = new CommentRepository(unitOfWork);
+            userGroupRepository = new UserGroupRepository(unitOfWork);
         }
 
         [Route("[action]")]
@@ -39,7 +43,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{id}")]
         [HttpGet]
-        public async Task<ActionResult> GetGroup([FromRoute]int id)
+        public async Task<ActionResult> GetGroup([FromRoute] int id)
         {
             try
             {
@@ -56,21 +60,23 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]")]
+        [Route("[action]/{userId}")]
         [HttpPost]
-        public async Task<ActionResult<Group>> CreateGroup([FromBody] Group group)
+        public async Task<ActionResult<Group>> CreateGroup([FromRoute]int userId,[FromBody] Group group)
         {
             try
             {
-                if (group == null)
+                var userResult = await userRepository.GetById(userId);
+                if (group == null || userResult == null)
                 {
                     return BadRequest();
                 }
                 var createdGroup = await groupRepository.Create(group);
                 if (createdGroup == null)
                 {
-                    return BadRequest("User Already Exists");
+                    return BadRequest("Group Already Exists");
                 }
+                await userGroupRepository.Create(group.Id, userResult);
                 await unitOfWork.Save();
                 return CreatedAtAction(nameof(GetGroup), new { Id = createdGroup.Id }, createdGroup);
             }
@@ -80,9 +86,34 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
+        [Route("[action]/{groupId}")]
+        [HttpPost]
+        public async Task<ActionResult<Group>> CreateGroupPost([FromRoute]int groupId,[FromBody]Post post)
+        {
+            try
+            {
+                if (post == null)
+                {
+                    return BadRequest();
+                }
+                var group = await groupRepository.GetById(groupId);
+                if (group == null)
+                {
+                    return BadRequest("No such group found");
+                }
+                await postRepository.CreateGroupPost(groupId, post);
+                await unitOfWork.Save();
+                return CreatedAtAction(nameof(GetGroup), new { Id = post.Id }, post);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating group");
+            }
+        }
+
         [Route("[action]/{id}")]
         [HttpDelete]
-        public async Task<ActionResult<User>> DeleteGroup([FromRoute] int id)
+        public async Task<ActionResult<User>> DeleteGroup([FromRoute]int id)
         {
             try
             {
@@ -90,15 +121,6 @@ namespace SocialWebsite.Api.Controllers
                 if (result == null)
                 {
                     return BadRequest();
-                }
-                var postResult = await postRepository.Get(x=>x.GroupId == id);
-                foreach(var post in postResult)
-                {
-                    var commentResult = await commentRepository.Get(x=>x.PostId == post.Id);
-                    foreach(var comment in commentResult)
-                    {
-                        await commentRepository.Delete(comment);
-                    }
                 }
                 await groupRepository.Delete(result);
                 await unitOfWork.Save();
@@ -110,5 +132,26 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
+        [Route("[action]/{groupId}/{postId}")]
+        [HttpDelete]
+        public async Task<ActionResult<Post>> DeleteGroupPost([FromRoute]int groupId, [FromRoute]int postId)
+        {
+            try
+            {
+                var resultGroup = await groupRepository.GetById(groupId);
+                var resultPost = await postRepository.GetById(postId);
+                if (resultGroup == null || resultPost == null)
+                {
+                    return BadRequest();
+                }
+                await postRepository.Delete(resultPost);
+                await unitOfWork.Save();
+                return Ok(resultPost);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting group post");
+            }
+        }
     }
 }
