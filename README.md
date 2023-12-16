@@ -2,4 +2,4 @@
 Facebook clone
 
 Database schema
-![Screenshot_3](https://github.com/Kurtana13/SocialWebsite/assets/71670083/b642810b-5b41-4ea1-a9b3-d62c58fa2e36)
+![Screenshot_4](https://github.com/Kurtana13/SocialWebsite/assets/71670083/d27abe5e-cdf1-415e-b0d6-b8d37f0c96e0)
