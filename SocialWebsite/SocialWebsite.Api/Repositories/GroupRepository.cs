@@ -27,7 +27,7 @@ namespace SocialWebsite.Api.Repositories
             {
                 return null;
             }
-            _dbSet.Add(group);
+            await _dbSet.AddAsync(group);
             return group;
         }
     }

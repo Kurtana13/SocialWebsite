@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.ObjectModel;
 
 namespace SocialWebsite.Models
 {
@@ -13,6 +14,7 @@ namespace SocialWebsite.Models
         public string Name { get; set; } = null;
 
         public virtual ICollection<User>? Users { get; set;}
+        public virtual ICollection<UserGroup>? UserGroups { get; set; }
         public virtual ICollection<Post>? Posts { get; set; }
 
     }

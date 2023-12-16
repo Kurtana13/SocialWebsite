@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using SocialWebsite.Api.Data;
 using SocialWebsite.Api.Repositories;
 using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
+using System.ComponentModel;
 
 namespace SocialWebsite.Api.Controllers
 {
@@ -62,7 +65,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{userId}")]
         [HttpPost]
-        public async Task<ActionResult<Group>> CreateGroup([FromRoute]int userId,[FromBody] Group group)
+        public async Task<ActionResult<Group>> CreateGroup([FromRoute] int userId, [FromBody] Group group)
         {
             try
             {
@@ -76,7 +79,8 @@ namespace SocialWebsite.Api.Controllers
                 {
                     return BadRequest("Group Already Exists");
                 }
-                await userGroupRepository.Create(group.Id, userResult);
+                await unitOfWork.Save();
+                await userGroupRepository.Create(createdGroup.Id, userResult);
                 await unitOfWork.Save();
                 return CreatedAtAction(nameof(GetGroup), new { Id = createdGroup.Id }, createdGroup);
             }
@@ -88,7 +92,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{groupId}")]
         [HttpPost]
-        public async Task<ActionResult<Group>> CreateGroupPost([FromRoute]int groupId,[FromBody]Post post)
+        public async Task<ActionResult<Group>> CreateGroupPost([FromRoute] int groupId, [FromBody] Post post)
         {
             try
             {
@@ -108,6 +112,27 @@ namespace SocialWebsite.Api.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error creating group");
+            }
+        }
+
+        [Route("[action]/{groupId}")]
+        [HttpPost]
+        public async Task<ActionResult<User>> AddUserToGroup([FromRoute] int groupId, [FromBody]int userId)
+        {
+            try
+            {
+                var userResult = await userRepository.GetById(userId);
+                if (userResult == null)
+                {
+                    return BadRequest();
+                }
+                await userGroupRepository.Create(groupId, userResult);
+                await unitOfWork.Save();
+                return CreatedAtAction(nameof(UserController.GetUser), new { Id = userId }, userResult);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error adding user to group");
             }
         }
 

@@ -22,6 +22,21 @@ namespace SocialWebsite.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("GroupUser", b =>
+                {
+                    b.Property<int>("GroupsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GroupsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("GroupUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -189,14 +204,9 @@ namespace SocialWebsite.Api.Migrations
                     b.Property<int>("FriendId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("int");
-
                     b.HasKey("UserId", "FriendId");
 
                     b.HasIndex("FriendId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Friends");
                 });
@@ -216,26 +226,6 @@ namespace SocialWebsite.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("SocialWebsite.Models.Notification", b =>
-                {
-                    b.Property<int>("RecipientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("RecipientId", "SenderId");
-
-                    b.HasIndex("SenderId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("SocialWebsite.Models.Post", b =>
@@ -339,27 +329,32 @@ namespace SocialWebsite.Api.Migrations
 
             modelBuilder.Entity("SocialWebsite.Models.UserGroup", b =>
                 {
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupId1")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId1")
-                        .HasColumnType("int");
+                    b.HasKey("UserId", "GroupId");
 
-                    b.HasKey("GroupId", "UserId");
+                    b.HasIndex("GroupId");
 
-                    b.HasIndex("GroupId1");
+                    b.ToTable("UserGroup");
+                });
 
-                    b.HasIndex("UserId");
+            modelBuilder.Entity("GroupUser", b =>
+                {
+                    b.HasOne("SocialWebsite.Models.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("UserGroups");
+                    b.HasOne("SocialWebsite.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -418,7 +413,7 @@ namespace SocialWebsite.Api.Migrations
                     b.HasOne("SocialWebsite.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("SocialWebsite.Models.User", "User")
@@ -436,45 +431,18 @@ namespace SocialWebsite.Api.Migrations
                     b.HasOne("SocialWebsite.Models.User", "FriendUser")
                         .WithMany()
                         .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SocialWebsite.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Friends")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SocialWebsite.Models.User", null)
-                        .WithMany("Friends")
-                        .HasForeignKey("UserId1");
-
                     b.Navigation("FriendUser");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SocialWebsite.Models.Notification", b =>
-                {
-                    b.HasOne("SocialWebsite.Models.User", "Recipient")
-                        .WithMany()
-                        .HasForeignKey("RecipientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialWebsite.Models.User", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialWebsite.Models.User", null)
-                        .WithMany("Notifications")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Recipient");
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("SocialWebsite.Models.Post", b =>
@@ -497,27 +465,15 @@ namespace SocialWebsite.Api.Migrations
 
             modelBuilder.Entity("SocialWebsite.Models.UserGroup", b =>
                 {
-                    b.HasOne("SocialWebsite.Models.Group", null)
-                        .WithMany()
+                    b.HasOne("SocialWebsite.Models.Group", "Group")
+                        .WithMany("UserGroups")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SocialWebsite.Models.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialWebsite.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("SocialWebsite.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -529,6 +485,8 @@ namespace SocialWebsite.Api.Migrations
             modelBuilder.Entity("SocialWebsite.Models.Group", b =>
                 {
                     b.Navigation("Posts");
+
+                    b.Navigation("UserGroups");
                 });
 
             modelBuilder.Entity("SocialWebsite.Models.Post", b =>
@@ -542,9 +500,9 @@ namespace SocialWebsite.Api.Migrations
 
                     b.Navigation("Friends");
 
-                    b.Navigation("Notifications");
-
                     b.Navigation("Posts");
+
+                    b.Navigation("UserGroups");
                 });
 #pragma warning restore 612, 618
         }

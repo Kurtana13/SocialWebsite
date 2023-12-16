@@ -23,7 +23,7 @@ namespace SocialWebsite.Api.Repositories
 
         public async Task<User> Create(int groupId,User user)
         {
-            var result = await _dbSet.FindAsync(groupId,user.Id);
+            var result =await _dbSet.FirstOrDefaultAsync(x=>x.GroupId == groupId && x.UserId==user.Id);
             if (result != null)
             {
                 return null;
