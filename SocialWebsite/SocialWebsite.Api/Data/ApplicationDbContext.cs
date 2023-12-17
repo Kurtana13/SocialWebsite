@@ -65,7 +65,7 @@ namespace SocialWebsite.Api.Data
                 b.HasOne(ug => ug.Group)
                  .WithMany(g => g.UserGroups)
                  .HasForeignKey(ug => ug.GroupId)
-                 .OnDelete(DeleteBehavior.Restrict); 
+                 .OnDelete(DeleteBehavior.Cascade); 
 
 
             });

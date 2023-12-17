@@ -117,7 +117,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{groupId}")]
         [HttpPost]
-        public async Task<ActionResult<User>> AddUserToGroup([FromRoute] int groupId, [FromBody]int userId)
+        public async Task<ActionResult<User>> AddUserToGroup([FromRoute] int groupId, [FromBody] int userId)
         {
             try
             {
@@ -127,6 +127,27 @@ namespace SocialWebsite.Api.Controllers
                     return BadRequest();
                 }
                 await userGroupRepository.Create(groupId, userResult);
+                await unitOfWork.Save();
+                return CreatedAtAction(nameof(UserController.GetUser), new { Id = userId }, userResult);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error adding user to group");
+            }
+        }
+
+        [Route("[action]/{groupId}")]
+        [HttpDelete]
+        public async Task<ActionResult<User>> RemoveUserFromGroup([FromRoute] int groupId, [FromBody] int userId)
+        {
+            try
+            {
+                var userResult = await userRepository.GetById(userId);
+                if (userResult == null)
+                {
+                    return BadRequest();
+                }
+                await userGroupRepository.Delete(ug=>ug.UserId == userId && ug.GroupId == groupId);
                 await unitOfWork.Save();
                 return CreatedAtAction(nameof(UserController.GetUser), new { Id = userId }, userResult);
             }

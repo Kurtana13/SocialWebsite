@@ -468,7 +468,7 @@ namespace SocialWebsite.Api.Migrations
                     b.HasOne("SocialWebsite.Models.Group", "Group")
                         .WithMany("UserGroups")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SocialWebsite.Models.User", "User")
