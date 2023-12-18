@@ -19,5 +19,12 @@ namespace SocialWebsite.Api.Repositories
         {
 
         }
+
+        public async Task<Comment> Create(int postId,int ownerId,Comment comment)
+        {
+            comment.PostId = postId;
+            comment.UserId = ownerId;
+            return await base.Create(comment);
+        }
     }
 }

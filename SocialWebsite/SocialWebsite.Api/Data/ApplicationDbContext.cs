@@ -38,7 +38,24 @@ namespace SocialWebsite.Api.Data
                 //User-Comment
                 b.HasMany(u => u.Comments)
                 .WithOne(c => c.User)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            });
+
+            builder.Entity<UserGroup>(b =>
+            {
+                b.HasKey(ug => new { ug.UserId, ug.GroupId });
+
+                b.HasOne(ug => ug.User)
+                 .WithMany(u => u.UserGroups)
+                 .HasForeignKey(ug => ug.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+                b.HasOne(ug => ug.Group)
+                 .WithMany(g => g.UserGroups)
+                 .HasForeignKey(ug => ug.GroupId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
 
             });
 
@@ -51,23 +68,6 @@ namespace SocialWebsite.Api.Data
                 b.HasMany(g => g.Posts)
                 .WithOne(p => p.Group)
                 .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            builder.Entity<UserGroup>(b =>
-            {
-                b.HasKey(ug => new { ug.UserId, ug.GroupId });
-
-                b.HasOne(ug => ug.User)
-                 .WithMany(u => u.UserGroups)
-                 .HasForeignKey(ug => ug.UserId)
-                 .OnDelete(DeleteBehavior.Cascade); 
-
-                b.HasOne(ug => ug.Group)
-                 .WithMany(g => g.UserGroups)
-                 .HasForeignKey(ug => ug.GroupId)
-                 .OnDelete(DeleteBehavior.Cascade); 
-
-
             });
 
             builder.Entity<Post>(b =>
@@ -109,7 +109,7 @@ namespace SocialWebsite.Api.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<Group> Groups { get; set; }
-        //public DbSet<UserGroup> UserGroups { get; set; }
+        public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<User> Users { get; set; }
     }

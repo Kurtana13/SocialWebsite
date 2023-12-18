@@ -21,6 +21,12 @@ namespace SocialWebsite.Api.Repositories
 
         }
 
+        public async Task<Post> Create(int userId,Post post)
+        {
+            post.UserId = userId;
+            return await base.Create(post);
+        }
+
         public async Task<Post> CreateGroupPost(int groupId,Post post)
         {
             post.GroupId = groupId;

@@ -32,7 +32,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]")]
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<Group>>> GetAll()
         {
             try
             {
@@ -46,7 +46,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{id}")]
         [HttpGet]
-        public async Task<ActionResult> GetGroup([FromRoute] int id)
+        public async Task<ActionResult<Group>> GetGroup([FromRoute] int id)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{groupId}")]
         [HttpPost]
-        public async Task<ActionResult<User>> AddUserToGroup([FromRoute] int groupId, [FromBody] int userId)
+        public async Task<ActionResult<User>> CreateGroupUser([FromRoute] int groupId, [FromBody] int userId)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{groupId}")]
         [HttpDelete]
-        public async Task<ActionResult<User>> RemoveUserFromGroup([FromRoute] int groupId, [FromBody] int userId)
+        public async Task<ActionResult<User>> DeleteGroupUser([FromRoute] int groupId, [FromBody] int userId)
         {
             try
             {

@@ -16,11 +16,9 @@ namespace SocialWebsite.Models
         public string? Content { get; set; }
 
         public int PostId { get; set; }
-        [ForeignKey(nameof(PostId))]
         public virtual Post Post { get; set; } = null!;
 
-        public int? UserId { get; set; }
-        [ForeignKey(nameof(UserId))]
-        public virtual User? User { get; set; }
+        public int UserId { get; set; }
+        public virtual User User { get; set; } = null!;
     }
 }

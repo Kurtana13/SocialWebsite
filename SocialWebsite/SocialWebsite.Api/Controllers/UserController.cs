@@ -27,7 +27,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]")]
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
             try
             {
@@ -39,9 +39,9 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]/{id}")]
+        [Route("[action]/{userId}")]
         [HttpGet]
-        public async Task<ActionResult> GetUser([FromRoute]int id)
+        public async Task<ActionResult<User>> GetUser([FromRoute]int id)
         {
             try
             {
@@ -83,13 +83,13 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]/{id}")]
+        [Route("[action]/{userId}")]
         [HttpDelete]
-        public async Task<ActionResult<User>> DeleteUser([FromRoute]int id)
+        public async Task<ActionResult<User>> DeleteUser([FromRoute]int userId)
         {
             try
             {
-                var result = await userRepository.GetById(id);
+                var result = await userRepository.GetById(userId);
                 if (result == null)
                 {
                     return BadRequest();
@@ -125,13 +125,13 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]/{id}")]
+        [Route("[action]/{userId}")]
         [HttpPut]
-        public async Task<ActionResult<User>> UpdateUser([FromRoute]int id, [FromBody] User user)
+        public async Task<ActionResult<User>> UpdateUser([FromRoute]int userId, [FromBody] User user)
         {
             try
             {
-                var result = await userRepository.GetById(user.Id);
+                var result = await userRepository.GetById(userId);
                 if(result == null)
                 {
                     return BadRequest();
