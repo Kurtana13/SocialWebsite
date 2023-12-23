@@ -75,7 +75,7 @@ namespace SocialWebsite.Api.Controllers
                     return BadRequest("User Already Exists");
                 }
                 await unitOfWork.Save();
-                return CreatedAtAction(nameof(GetUser), new { Id = createdUser.Id }, createdUser);
+                return Ok(createdUser);
             }
             catch (Exception)
             {

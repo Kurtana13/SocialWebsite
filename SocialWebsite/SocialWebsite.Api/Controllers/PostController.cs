@@ -100,9 +100,9 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]/{postId}")]
+        [Route("[action]/{postId}/{ownerId}")]
         [HttpPost]
-        public async Task<ActionResult<Comment>> CreatePostComment([FromRoute]int postId, [FromBody]int ownerId, [FromBody]Comment comment)
+        public async Task<ActionResult<Comment>> CreatePostComment([FromRoute]int postId, [FromRoute]int ownerId, [FromBody]Comment comment)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace SocialWebsite.Api.Controllers
                 }
                 await commentRepository.Create(postResult.Id,ownerResult.Id,comment);
                 await unitOfWork.Save();
-                return CreatedAtAction(nameof(GetPost), new { Id = comment.Id }, comment);
+                return Ok(comment);
             }
             catch (Exception)
             {

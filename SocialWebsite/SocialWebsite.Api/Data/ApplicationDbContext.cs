@@ -104,6 +104,9 @@ namespace SocialWebsite.Api.Data
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
+            builder.Entity<User>().HasData(
+                new { Id = 1,UserName = "Shota", Email = "shota@gmail.com", EmailConfirmed = true, AccessFailedCount = 1, LockoutEnabled = true, PhoneNumberConfirmed = true, TwoFactorEnabled = true },
+                new { Id = 2, UserName = "Saba", Email = "saba@gmail.com", EmailConfirmed = true, AccessFailedCount = 1, LockoutEnabled = true, PhoneNumberConfirmed = true, TwoFactorEnabled = true });
         }
 
         public DbSet<Comment> Comments { get; set; }

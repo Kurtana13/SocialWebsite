@@ -80,3 +80,8 @@ D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Microso
 D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Newtonsoft.Json.dll
 D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Microsoft.OpenApi.dll
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\obj\Debug\net7.0\SocialWebsite.Api.MvcApplicationPartsAssemblyInfo.cs

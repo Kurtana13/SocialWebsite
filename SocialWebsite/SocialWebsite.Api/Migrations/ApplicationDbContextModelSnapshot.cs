@@ -310,6 +310,30 @@ namespace SocialWebsite.Api.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 1,
+                            Email = "shota@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            PhoneNumberConfirmed = true,
+                            TwoFactorEnabled = true,
+                            UserName = "Shota"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 1,
+                            Email = "saba@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            PhoneNumberConfirmed = true,
+                            TwoFactorEnabled = true,
+                            UserName = "Saba"
+                        });
                 });
 
             modelBuilder.Entity("SocialWebsite.Models.UserGroup", b =>
