@@ -3,6 +3,7 @@ using SocialWebsite.Api.Data;
 using SocialWebsite.Api.Repositories;
 using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
+using SocialWebsite.Models.ViewModels;
 
 namespace SocialWebsite.Api.Controllers
 {
@@ -16,13 +17,17 @@ namespace SocialWebsite.Api.Controllers
         private IPostRepository postRepository;
         private ICommentRepository commentRepository;
 
-        public PostController(ApplicationDbContext context)
+        public PostController(IUnitOfWork<ApplicationDbContext> unitOfWork, 
+            IUserRepository userRepository,
+            IGroupRepository groupRepository, 
+            IPostRepository postRepository, 
+            ICommentRepository commentRepository)
         {
-            unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
-            userRepository = new UserRepository(unitOfWork);
-            groupRepository = new GroupRepository(unitOfWork);
-            postRepository = new PostRepository(unitOfWork);
-            commentRepository = new CommentRepository(unitOfWork);
+            this.unitOfWork = unitOfWork;
+            this.userRepository = userRepository;
+            this.groupRepository = groupRepository;
+            this.postRepository = postRepository;
+            this.commentRepository = commentRepository;
         }
 
         [Route("[action]")]
@@ -60,16 +65,16 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{userId}")]
         [HttpPost]
-        public async Task<ActionResult<Post>> CreatePost([FromRoute] int userId, [FromBody] Post post)
+        public async Task<ActionResult<Post>> CreatePost([FromRoute]int userId,[FromBody]PostViewModel postViewModel)
         {
             try
             {
                 var userResult = await userRepository.GetById(userId);
-                if (userResult == null)
+                if (userResult == null || postViewModel == null)
                 {
                     return BadRequest();
                 }
-                var createdPost = await postRepository.Create(userResult.Id, post);
+                var createdPost = await postRepository.Create(userResult.Id, postViewModel);
                 await unitOfWork.Save();
                 return CreatedAtAction(nameof(GetPost), new { Id = createdPost.Id }, createdPost);
             }
@@ -102,19 +107,46 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{postId}/{ownerId}")]
         [HttpPost]
-        public async Task<ActionResult<Comment>> CreatePostComment([FromRoute]int postId, [FromRoute]int ownerId, [FromBody]Comment comment)
+        public async Task<ActionResult<Comment>> CreatePostComment([FromRoute]int postId, [FromRoute]int ownerId, [FromBody]CommentViewModel commentViewModel)
         {
             try
             {
                 var postResult = await postRepository.GetById(postId);
                 var ownerResult = await userRepository.GetById(ownerId);
-                if (postResult == null || ownerResult == null)
+                if (postResult == null || ownerResult == null || commentViewModel == null)
                 {
                     return BadRequest();
                 }
-                await commentRepository.Create(postResult.Id,ownerResult.Id,comment);
+                var commentResult = await commentRepository.Create(postResult.Id,ownerResult.Id,commentViewModel);
                 await unitOfWork.Save();
-                return Ok(comment);
+                return Ok(commentResult);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting user");
+            }
+        }
+
+        [Route("[action]/{postId}/{commentId}")]
+        [HttpDelete]
+        public async Task<ActionResult<Comment>> DeletePostComment([FromRoute]int postId, [FromRoute]int commentId)
+        {
+            try
+            {
+                var postResult = await postRepository.GetById(postId);
+                if (postResult == null)
+                {
+                    return BadRequest("Couldn't find the post");
+                }
+                var commentResult = postResult.Comments.FirstOrDefault(x => x.Id == commentId);
+                if(commentResult == null)
+                {
+                    return BadRequest("Couldn't find the comment of the post");
+                }
+                await commentRepository.Delete(commentResult);
+                await unitOfWork.Save();
+                return Ok(commentResult);
+
             }
             catch (Exception)
             {

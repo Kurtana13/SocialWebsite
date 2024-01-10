@@ -57,6 +57,7 @@ namespace SocialWebsite.Api.Data
 
         public virtual async Task<T> Create(T entity)
         {
+
             if(entity == null)
             {
                 return null;

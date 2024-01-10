@@ -5,12 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SocialWebsite.Models.ViewModels;
 
 namespace SocialWebsite.Models
 {
     public class Comment
     {
-        [Key]
+        public Comment() { }
+        public Comment(CommentViewModel commentViewModel)
+        {
+            this.Content = commentViewModel.Content;
+        }
+
         public int Id { get; set; }
 
         public string? Content { get; set; }

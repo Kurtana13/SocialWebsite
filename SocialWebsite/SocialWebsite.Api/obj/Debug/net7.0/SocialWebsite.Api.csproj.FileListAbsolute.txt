@@ -85,3 +85,4 @@ D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Swashbu
 D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\obj\Debug\net7.0\SocialWebsite.Api.MvcApplicationPartsAssemblyInfo.cs
+D:\Github\SocialWebsite\SocialWebsite\SocialWebsite.Api\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

@@ -1,9 +1,12 @@
 ﻿using SocialWebsite.Models;
+using SocialWebsite.Models.ViewModels;
 
 namespace SocialWebsite.Api.Repositories.IRepositories
 {
     public interface IUserRepository : IGenericRepository<User>
     {
-        new public Task<User> Create(User user);
+        public Task<User> Create(User user,string password);
+        public Task<User> Create(UserViewModel userViewModel);
+        public Task<User> GetByUsername(string username);
     }
 }

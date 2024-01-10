@@ -2,6 +2,7 @@
 using SocialWebsite.Api.Data;
 using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
+using SocialWebsite.Models.ViewModels;
 
 namespace SocialWebsite.Api.Repositories
 {
@@ -25,6 +26,11 @@ namespace SocialWebsite.Api.Repositories
         {
             post.UserId = userId;
             return await base.Create(post);
+        }
+
+        public async Task<Post> Create(int userId,PostViewModel postViewModel)
+        {
+            return await Create(userId,new Post(postViewModel));
         }
 
         public async Task<Post> CreateGroupPost(int groupId,Post post)

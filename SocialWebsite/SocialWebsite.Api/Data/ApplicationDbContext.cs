@@ -105,8 +105,14 @@ namespace SocialWebsite.Api.Data
             });
 
             builder.Entity<User>().HasData(
-                new { Id = 1,UserName = "Shota", Email = "shota@gmail.com", EmailConfirmed = true, AccessFailedCount = 1, LockoutEnabled = true, PhoneNumberConfirmed = true, TwoFactorEnabled = true },
+                new { Id = 1, UserName = "Shota", Email = "shota@gmail.com", EmailConfirmed = true, AccessFailedCount = 1, LockoutEnabled = true, PhoneNumberConfirmed = true, TwoFactorEnabled = true },
                 new { Id = 2, UserName = "Saba", Email = "saba@gmail.com", EmailConfirmed = true, AccessFailedCount = 1, LockoutEnabled = true, PhoneNumberConfirmed = true, TwoFactorEnabled = true });
+            builder.Entity<IdentityRole<int>>().HasData(
+                new { Id = 1, Name = "admin" },
+                new { Id = 2, Name = "user" },
+                new { Id = 3, Name = "groupAdmin" });
+            builder.Entity<IdentityUserRole<int>>().HasData(
+                new { UserId = 2, RoleId = 1 });
         }
 
         public DbSet<Comment> Comments { get; set; }

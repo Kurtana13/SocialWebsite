@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialWebsite.Api.Data;
 using SocialWebsite.Api.Repositories;
 using SocialWebsite.Api.Repositories.IRepositories;
+using SocialWebsite.Api.Services;
 using SocialWebsite.Models;
+using SocialWebsite.Models.ViewModels;
 using System.Reflection.Metadata.Ecma335;
 
 namespace SocialWebsite.Api.Controllers
@@ -14,15 +17,14 @@ namespace SocialWebsite.Api.Controllers
     {
         private IUnitOfWork<ApplicationDbContext> unitOfWork;
         private IUserRepository userRepository;
-        private UserManager<User> userManager;
-        private SignInManager<User> signInManager;
+        private JwtTokenGenerator jwtTokenGenerator;
 
-        public UserController(ApplicationDbContext context,UserManager<User> userManager,SignInManager<User> signInManager)
+        public UserController(ApplicationDbContext context,
+            UserManager<User> userManager)
         {
             unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
-            userRepository = new UserRepository(unitOfWork);
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            jwtTokenGenerator = new JwtTokenGenerator(userManager);
+            userRepository = new UserRepository(unitOfWork,userManager);
         }
 
         [Route("[action]")]
@@ -41,11 +43,11 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{userId}")]
         [HttpGet]
-        public async Task<ActionResult<User>> GetUser([FromRoute]int id)
+        public async Task<ActionResult<User>> GetUser([FromRoute]int userId)
         {
             try
             {
-                var result = await userRepository.GetById(id);
+                var result = await userRepository.GetById(userId);
                 if(result == null)
                 {
                     return NotFound();
@@ -58,24 +60,25 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-
         [Route("[action]")]
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser([FromBody]User user)
+        public async Task<ActionResult<User>> Register([FromBody]UserViewModel userViewModel)
         {
             try
             {
-                if(user == null)
+                if(userViewModel == null)
                 {
                     return BadRequest();
                 }
-                var createdUser = await userRepository.Create(user);
+                
+                var createdUser = await userRepository.Create(userViewModel);
                 if(createdUser == null)
                 {
                     return BadRequest("User Already Exists");
                 }
                 await unitOfWork.Save();
-                return Ok(createdUser);
+                return Ok(await jwtTokenGenerator.GenerateToken(createdUser));
             }
             catch (Exception)
             {
@@ -106,11 +109,11 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]")]
         [HttpDelete]
-        public async Task<ActionResult<User>> DeleteUser([FromBody]User user)
+        public async Task<ActionResult<User>> DeleteUser([FromBody]UserViewModel userViewModel)
         {
             try
             {
-                var result = await userRepository.GetById(user.Id);
+                var result = await userRepository.GetByUsername(userViewModel.Username);
                 if (result == null)
                 {
                     return BadRequest();
@@ -126,17 +129,18 @@ namespace SocialWebsite.Api.Controllers
         }
 
         [Route("[action]/{userId}")]
-        [HttpPut]
-        public async Task<ActionResult<User>> UpdateUser([FromRoute]int userId, [FromBody] User user)
+        [Authorize]
+        [HttpPatch]
+        public async Task<ActionResult<User>> UpdateUser([FromRoute]int userId, [FromBody] UserViewModel userViewModel)
         {
             try
             {
-                var result = await userRepository.GetById(userId);
+                var result = await userRepository.GetByUsername(userViewModel.Username);
                 if(result == null)
                 {
                     return BadRequest();
                 }
-                await userRepository.Put(result,user);
+                await userRepository.Put(result,new User(userId,userViewModel));
                 await unitOfWork.Save();
                 return Ok(result);
             }

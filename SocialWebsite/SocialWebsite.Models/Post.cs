@@ -5,11 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SocialWebsite.Models.ViewModels;
 
 namespace SocialWebsite.Models
 {
     public class Post
     {
+        public Post() { }
+        public Post(PostViewModel postViewModel)
+        {
+            this.Title = postViewModel.Title;
+            this.Content = postViewModel.Content;
+        }
         public int Id { get; set; }
         public string Title { get; set; } = null!;
         public string Content { get; set; } = null!;

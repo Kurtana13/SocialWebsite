@@ -1,6 +1,7 @@
 ﻿using SocialWebsite.Api.Data;
 using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
+using SocialWebsite.Models.ViewModels;
 
 namespace SocialWebsite.Api.Repositories
 {
@@ -25,6 +26,11 @@ namespace SocialWebsite.Api.Repositories
             comment.PostId = postId;
             comment.UserId = ownerId;
             return await base.Create(comment);
+        }
+
+        public async Task<Comment> Create(int postId, int ownerId, CommentViewModel commentViewModel)
+        {
+            return await Create(postId, ownerId, new Comment(commentViewModel));
         }
     }
 }

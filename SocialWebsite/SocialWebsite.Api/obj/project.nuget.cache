@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "vNq1QwpTjMYNd45Y2EASs9YCZTDUGySdtElf9LMFlpjhSFR8KsBLE8qAOupr6LDRuoqZ0WsJqHY8EwOlDtyZuA==",
+  "dgSpecHash": "wNWra0WQZmVn0zTSEG15IMvNEciDIRp3ulI7T5rC++cSAx8JUZjyKcDUjKXOuLtMQ1RuMOsddwYwzOJs1+og6Q==",
   "success": true,
   "projectFilePath": "D:\\Github\\SocialWebsite\\SocialWebsite\\SocialWebsite.Api\\SocialWebsite.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\admin\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.12\\microsoft.aspnetcore.authentication.jwtbearer.7.0.12.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\7.0.12\\microsoft.aspnetcore.cryptography.internal.7.0.12.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\7.0.12\\microsoft.aspnetcore.cryptography.keyderivation.7.0.12.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\7.0.12\\microsoft.aspnetcore.identity.entityframeworkcore.7.0.12.nupkg.sha512",
