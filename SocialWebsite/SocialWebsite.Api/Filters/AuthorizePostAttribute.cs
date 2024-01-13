@@ -17,7 +17,7 @@ namespace SocialWebsite.Api.Filters
                 var postId = Convert.ToInt32(context.HttpContext.Request.RouteValues["postId"].ToString());
                 var postResult = await postRepository.GetById(postId);
                 var userResult = await userRepository.GetByUsername(username);
-                if (postResult != null )
+                if (postResult != null && userResult != null)
                 {
                     if (userResult.Id != postResult.UserId)
                     {
