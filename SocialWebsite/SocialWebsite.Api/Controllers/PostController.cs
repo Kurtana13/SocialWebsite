@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SocialWebsite.Api.Data;
+using SocialWebsite.Api.Filters;
+using SocialWebsite.Api.Identity;
 using SocialWebsite.Api.Repositories;
 using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Models;
@@ -31,6 +34,7 @@ namespace SocialWebsite.Api.Controllers
         }
 
         [Route("[action]")]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Post>>> GetAll()
         {
@@ -45,6 +49,7 @@ namespace SocialWebsite.Api.Controllers
         }
 
         [Route("[action]/{id}")]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> GetPost([FromRoute] int id)
         {
@@ -63,13 +68,14 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]/{userId}")]
+        [Route("[action]/{username}")]
+        [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Post>> CreatePost([FromRoute]int userId,[FromBody]PostViewModel postViewModel)
+        public async Task<ActionResult<Post>> CreatePost([FromRoute]string username,[FromBody]PostViewModel postViewModel)
         {
             try
             {
-                var userResult = await userRepository.GetById(userId);
+                var userResult = await userRepository.GetByUsername(username);
                 if (userResult == null || postViewModel == null)
                 {
                     return BadRequest();
@@ -85,8 +91,10 @@ namespace SocialWebsite.Api.Controllers
         }
 
         [Route("[action]/{postId}")]
+        [Authorize]
+        [AuthorizePost]
         [HttpDelete]
-        public async Task<ActionResult<Post>> DeletePost([FromRoute] int postId)
+        public async Task<ActionResult<Post>> DeletePost([FromRoute]int postId)
         {
             try
             {
@@ -105,14 +113,15 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]/{postId}/{ownerId}")]
+        [Route("[action]/{postId}/{ownerUsername}")]
+        [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Comment>> CreatePostComment([FromRoute]int postId, [FromRoute]int ownerId, [FromBody]CommentViewModel commentViewModel)
+        public async Task<ActionResult<Comment>> CreatePostComment([FromRoute]int postId, [FromRoute]string ownerUsername, [FromBody]CommentViewModel commentViewModel)
         {
             try
             {
                 var postResult = await postRepository.GetById(postId);
-                var ownerResult = await userRepository.GetById(ownerId);
+                var ownerResult = await userRepository.GetByUsername(ownerUsername);
                 if (postResult == null || ownerResult == null || commentViewModel == null)
                 {
                     return BadRequest();
@@ -128,6 +137,8 @@ namespace SocialWebsite.Api.Controllers
         }
 
         [Route("[action]/{postId}/{commentId}")]
+        [Authorize]
+        [AuthorizeUser]
         [HttpDelete]
         public async Task<ActionResult<Comment>> DeletePostComment([FromRoute]int postId, [FromRoute]int commentId)
         {

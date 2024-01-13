@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using SocialWebsite.Api.Data;
+using SocialWebsite.Api.Filters;
 using SocialWebsite.Api.Identity;
 using SocialWebsite.Api.Repositories;
 using SocialWebsite.Api.Repositories.IRepositories;
@@ -45,14 +47,42 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options=>
 {
     options.AddPolicy(IdentityData.AdminUserPolicyName, p =>
-    p.RequireClaim(IdentityData.AdminUserClaimName, "true"));
+    p.RequireClaim(IdentityData.AdminUserClaimName, IdentityData.AdminUserClaimName));
     options.AddPolicy(IdentityData.UserPolicyName, p =>
-    p.RequireClaim(IdentityData.UserClaimName, "true"));
+    p.RequireClaim(IdentityData.UserClaimName, IdentityData.UserClaimName));
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "My API",
+        Version = "v1"
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please insert JWT with Bearer into field",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+           new string[] { }
+        }
+    });
+});
 
+builder.Services.AddSingleton<IConfiguration>(config);
 
 builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddScoped<RoleManager<IdentityRole<int>>>();
@@ -60,14 +90,19 @@ builder.Services.AddScoped<IUnitOfWork<ApplicationDbContext>, UnitOfWork<Applica
     new UnitOfWork<ApplicationDbContext>(provider.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IUserRepository, UserRepository>(provider =>
     new UserRepository(provider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>(),provider.GetRequiredService<UserManager<User>>()));
-builder.Services.AddScoped<IGroupRepository, GroupRepository>(provider =>
-    new GroupRepository(provider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>()));
 builder.Services.AddScoped<IPostRepository, PostRepository>(provider =>
     new PostRepository(provider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>()));
+builder.Services.AddScoped<ICommentRepository, CommentRepository>(provider =>
+    new CommentRepository(provider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>()));
+builder.Services.AddScoped<IGroupRepository, GroupRepository>(provider =>
+    new GroupRepository(provider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>()));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+builder.Services.AddScoped<JwtTokenGenerator>(provider =>
+    new JwtTokenGenerator(provider.GetRequiredService<UserManager<User>>(), config));
+
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-builder.Services.AddScoped<JwtTokenGenerator>();
 
 var app = builder.Build();
 

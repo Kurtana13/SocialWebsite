@@ -33,7 +33,7 @@ namespace SocialWebsite.Api.Data
                 query = query.Where(filter);
             }
             
-            foreach(var includeProperty  in includeProporties.Split
+            foreach(var includeProperty in includeProporties.Split
                 (new char[] {','},
                 StringSplitOptions.RemoveEmptyEntries))
             {
@@ -90,8 +90,7 @@ namespace SocialWebsite.Api.Data
         {
             T ?entityToDelete = await _dbSet.FindAsync(id);
             if(entityToDelete == null) { return null; }
-            _dbSet.Remove(entityToDelete);
-            return entityToDelete;
+            return await Delete(entityToDelete);
         }
 
         public virtual async Task<T> Put(T entity,T newEntity)

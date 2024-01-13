@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using SocialWebsite.Api.Data;
@@ -38,6 +39,7 @@ namespace SocialWebsite.Api.Controllers
 
 
         [Route("[action]")]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Group>>> GetAll()
         {
@@ -53,7 +55,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{id}")]
         [HttpGet]
-        public async Task<ActionResult<Group>> GetGroup([FromRoute] int id)
+        public async Task<ActionResult<Group>> GetGroup([FromRoute]int id)
         {
             try
             {
@@ -70,13 +72,13 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]/{userId}")]
+        [Route("[action]/{username}")]
         [HttpPost]
-        public async Task<ActionResult<Group>> CreateGroup([FromRoute] int userId, [FromBody] GroupViewModel groupViewModel)
+        public async Task<ActionResult<Group>> CreateGroup([FromRoute]string username, [FromBody] GroupViewModel groupViewModel)
         {
             try
             {
-                var userResult = await userRepository.GetById(userId);
+                var userResult = await userRepository.GetByUsername(username);
                 if (groupViewModel == null || userResult == null)
                 {
                     return BadRequest();
@@ -118,13 +120,14 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]/{groupId}/{userId}")]
+        [Route("[action]/{groupId}/{username}")]
         [HttpPost]
-        public async Task<ActionResult<Group>> CreateGroupPost([FromRoute] int groupId, [FromRoute] int userId, [FromBody]PostViewModel postViewModel)
+        public async Task<ActionResult<Group>> CreateGroupPost([FromRoute] int groupId, [FromRoute]string username, [FromBody]PostViewModel postViewModel)
         {
             try
             {
-                var createdPost = await postRepository.Create(userId,postViewModel);
+                var userResult = await userRepository.GetByUsername(username);
+                var createdPost = await postRepository.Create(userResult.Id,postViewModel);
                 if (createdPost == null)
                 {
                     return BadRequest();
@@ -168,18 +171,18 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{groupId}")]
         [HttpPost]
-        public async Task<ActionResult<User>> CreateGroupUser([FromRoute] int groupId, [FromBody] int userId)
+        public async Task<ActionResult<User>> CreateGroupUser([FromRoute]int groupId, [FromBody]string username)
         {
             try
             {
-                var userResult = await userRepository.GetById(userId);
+                var userResult = await userRepository.GetById(username);
                 if (userResult == null)
                 {
                     return BadRequest();
                 }
                 await userGroupRepository.Create(groupId, userResult);
                 await unitOfWork.Save();
-                return CreatedAtAction(nameof(UserController.GetUser), new { Id = userId }, userResult);
+                return Ok(userResult);
             }
             catch (Exception)
             {
@@ -189,18 +192,18 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{groupId}")]
         [HttpDelete]
-        public async Task<ActionResult<User>> DeleteGroupUser([FromRoute] int groupId, [FromBody] int userId)
+        public async Task<ActionResult<User>> DeleteGroupUser([FromRoute] int groupId, [FromBody]string username)
         {
             try
             {
-                var userResult = await userRepository.GetById(userId);
+                var userResult = await userRepository.GetByUsername(username);
                 if (userResult == null)
                 {
                     return BadRequest();
                 }
-                await userGroupRepository.Delete(ug=>ug.UserId == userId && ug.GroupId == groupId);
+                await userGroupRepository.Delete(ug=>ug.UserId == userResult.Id && ug.GroupId == groupId);
                 await unitOfWork.Save();
-                return CreatedAtAction(nameof(UserController.GetUser), new { Id = userId }, userResult);
+                return Ok(userResult);
             }
             catch (Exception)
             {

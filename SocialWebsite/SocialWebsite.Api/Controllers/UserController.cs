@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialWebsite.Api.Data;
+using SocialWebsite.Api.Filters;
+using SocialWebsite.Api.Identity;
 using SocialWebsite.Api.Repositories;
 using SocialWebsite.Api.Repositories.IRepositories;
 using SocialWebsite.Api.Services;
@@ -19,15 +21,17 @@ namespace SocialWebsite.Api.Controllers
         private IUserRepository userRepository;
         private JwtTokenGenerator jwtTokenGenerator;
 
-        public UserController(ApplicationDbContext context,
-            UserManager<User> userManager)
+        public UserController(IUnitOfWork<ApplicationDbContext> _unitOfWork,
+            IUserRepository _userRepository,
+            JwtTokenGenerator _jwtTokenGenerator)
         {
-            unitOfWork = new UnitOfWork<ApplicationDbContext>(context);
-            jwtTokenGenerator = new JwtTokenGenerator(userManager);
-            userRepository = new UserRepository(unitOfWork,userManager);
+            unitOfWork = _unitOfWork;
+            jwtTokenGenerator = _jwtTokenGenerator;
+            userRepository = _userRepository;
         }
 
         [Route("[action]")]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
@@ -42,6 +46,7 @@ namespace SocialWebsite.Api.Controllers
         }
 
         [Route("[action]/{userId}")]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<User>> GetUser([FromRoute]int userId)
         {
@@ -77,6 +82,7 @@ namespace SocialWebsite.Api.Controllers
                 {
                     return BadRequest("User Already Exists");
                 }
+
                 await unitOfWork.Save();
                 return Ok(await jwtTokenGenerator.GenerateToken(createdUser));
             }
@@ -86,61 +92,64 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
-        [Route("[action]/{userId}")]
-        [HttpDelete]
-        public async Task<ActionResult<User>> DeleteUser([FromRoute]int userId)
-        {
-            try
-            {
-                var result = await userRepository.GetById(userId);
-                if (result == null)
-                {
-                    return BadRequest();
-                }
-                await userRepository.Delete(result);
-                await unitOfWork.Save();
-                return Ok(result);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting user");
-            }
-        }
-
-        [Route("[action]")]
-        [HttpDelete]
-        public async Task<ActionResult<User>> DeleteUser([FromBody]UserViewModel userViewModel)
-        {
-            try
-            {
-                var result = await userRepository.GetByUsername(userViewModel.Username);
-                if (result == null)
-                {
-                    return BadRequest();
-                }
-                await userRepository.Delete(result);
-                await unitOfWork.Save();
-                return Ok(result);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting user");
-            }
-        }
-
-        [Route("[action]/{userId}")]
+        [Route("[action]/{username}")]
         [Authorize]
-        [HttpPatch]
-        public async Task<ActionResult<User>> UpdateUser([FromRoute]int userId, [FromBody] UserViewModel userViewModel)
+        [AuthorizeUser]
+        [HttpDelete]
+        public async Task<ActionResult<User>> DeleteUser([FromRoute]string username)
         {
             try
             {
-                var result = await userRepository.GetByUsername(userViewModel.Username);
+                var result = await userRepository.GetByUsername(username);
+                if (result == null)
+                {
+                    return BadRequest();
+                }
+                await userRepository.Delete(result);
+                await unitOfWork.Save();
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting user");
+            }
+        }
+
+        //[Route("[action]")]
+        //[HttpDelete]
+        //public async Task<ActionResult<User>> DeleteUser([FromBody] UserViewModel userViewModel)
+        //{
+        //    try
+        //    {
+        //        var result = await userRepository.GetByUsername(userViewModel.Username);
+        //        if (result == null)
+        //        {
+        //            return BadRequest();
+        //        }
+        //        await userRepository.Delete(result);
+        //        await unitOfWork.Save();
+        //        return Ok(result);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting user");
+        //    }
+        //}
+
+        [Route("[action]/{username}")]
+        [Authorize]
+        [AuthorizeUser]
+        [HttpPatch]
+        public async Task<ActionResult<User>> UpdateUser([FromRoute]string username, [FromBody] UserViewModel userViewModel)
+        {
+            try
+            {
+                var result = await userRepository.GetByUsername(username);
                 if(result == null)
                 {
                     return BadRequest();
                 }
-                await userRepository.Put(result,new User(userId,userViewModel));
+                await userRepository.Put(result,new User(result.Id,userViewModel));
                 await unitOfWork.Save();
                 return Ok(result);
             }

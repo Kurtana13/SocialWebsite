@@ -22,7 +22,7 @@ namespace SocialWebsite.Api.Repositories
 
         }
 
-        public async Task<Post> Create(int userId,Post post)
+        private async Task<Post> Create(int userId,Post post)
         {
             post.UserId = userId;
             return await base.Create(post);
