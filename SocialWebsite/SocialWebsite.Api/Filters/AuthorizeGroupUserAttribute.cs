@@ -3,9 +3,9 @@
 namespace SocialWebsite.Api.Filters
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class AuthorizeGroupUserAttribute : Attribute, IAuthorizationFilter
+    public class AuthorizeGroupUserAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             
         }

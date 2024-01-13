@@ -103,7 +103,7 @@ namespace SocialWebsite.Api.Controllers
                 {
                     return BadRequest();
                 }
-                await userRepository.DeleteById(postResult.Id);
+                await postRepository.Delete(postResult);
                 await unitOfWork.Save();
                 return Ok(postResult);
             }
@@ -138,7 +138,7 @@ namespace SocialWebsite.Api.Controllers
 
         [Route("[action]/{postId}/{commentId}")]
         [Authorize]
-        [AuthorizeUser]
+        [AuthorizeComment]
         [HttpDelete]
         public async Task<ActionResult<Comment>> DeletePostComment([FromRoute]int postId, [FromRoute]int commentId)
         {

@@ -88,7 +88,7 @@ namespace SocialWebsite.Api.Data
 
         public virtual async Task<T> DeleteById(object id)
         {
-            T ?entityToDelete = await _dbSet.FindAsync(id);
+            T ?entityToDelete = await GetById(id);
             if(entityToDelete == null) { return null; }
             return await Delete(entityToDelete);
         }

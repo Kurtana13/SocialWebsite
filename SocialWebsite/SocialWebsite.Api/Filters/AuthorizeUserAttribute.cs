@@ -6,9 +6,9 @@ namespace SocialWebsite.Api.Filters
 {
     //Detects if the user is the one who is making changes on its own account
     [AttributeUsage(AttributeTargets.Method)]
-    public class AuthorizeUserAttribute : Attribute, IAuthorizationFilter
+    public class AuthorizeUserAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var username = context.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
             if (!string.IsNullOrEmpty(username))
