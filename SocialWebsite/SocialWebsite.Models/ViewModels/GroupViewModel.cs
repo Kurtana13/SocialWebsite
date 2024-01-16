@@ -13,5 +13,8 @@ namespace SocialWebsite.Models.ViewModels
         [Required]
         [DisplayName("Name")]
         public string Name { get; set; } = null!;
+        [Required]
+        [DisplayName("Creator Username")]
+        public string Username { get; set; } = null!;
     }
 }

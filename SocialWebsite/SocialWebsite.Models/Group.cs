@@ -15,6 +15,7 @@ namespace SocialWebsite.Models
         public Group(GroupViewModel groupViewModel)
         {
             this.Name = groupViewModel.Name;
+            this.CreatorUsername = groupViewModel.Username;
         }
         public int Id { get; set; }
         public string Name { get; set; }

@@ -86,7 +86,7 @@ builder.Services.AddSingleton<IConfiguration>(config);
 
 builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddScoped<RoleManager<IdentityRole<int>>>();
-builder.Services.AddScoped<IUnitOfWork<ApplicationDbContext>, UnitOfWork<ApplicationDbContext>>(provider=>
+builder.Services.AddScoped<IUnitOfWork<ApplicationDbContext>, UnitOfWork<ApplicationDbContext>>(provider =>
     new UnitOfWork<ApplicationDbContext>(provider.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IUserRepository, UserRepository>(provider =>
     new UserRepository(provider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>(),provider.GetRequiredService<UserManager<User>>()));
@@ -96,6 +96,8 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>(provider =>
     new CommentRepository(provider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>()));
 builder.Services.AddScoped<IGroupRepository, GroupRepository>(provider =>
     new GroupRepository(provider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>()));
+builder.Services.AddScoped<IUserGroupRepository, UserGroupRepository>(provider =>
+    new UserGroupRepository(provider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>()));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddScoped<JwtTokenGenerator>(provider =>

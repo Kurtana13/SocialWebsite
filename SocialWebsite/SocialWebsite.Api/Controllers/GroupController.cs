@@ -120,6 +120,25 @@ namespace SocialWebsite.Api.Controllers
             }
         }
 
+        [Route("[action]/{groupId}")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Post>>> GetAllGroupPost([FromRoute]int groupId)
+        {
+            try
+            {
+                var result = await groupRepository.GetById(groupId);
+                if (result == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(await postRepository.Get(x=>x.GroupId == groupId));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Deleting group");
+            }
+        }
+
         [Route("[action]/{groupId}/{username}")]
         [HttpPost]
         public async Task<ActionResult<Group>> CreateGroupPost([FromRoute] int groupId, [FromRoute]string username, [FromBody]PostViewModel postViewModel)

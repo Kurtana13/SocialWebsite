@@ -62,6 +62,7 @@ namespace SocialWebsite.Api.Data
             builder.Entity<Group>(b =>
             {
                 b.HasKey(x => x.Id);
+                b.Property(g=>g.CreatorUsername).IsRequired();
 
                 //Relationships
                 //Group-Post
@@ -106,8 +107,6 @@ namespace SocialWebsite.Api.Data
 
             builder.Entity<IdentityRole<int>>().HasData(new IdentityRole<int> { Id = 1, Name = "admin", NormalizedName = "ADMIN".ToUpper() });
             builder.Entity<IdentityRole<int>>().HasData(new IdentityRole<int> { Id = 2, Name = "user", NormalizedName = "USER".ToUpper() });
-            builder.Entity<IdentityUserRole<int>>().HasData(
-                new { UserId = 2, RoleId = 1 });
         }
 
         public DbSet<Comment> Comments { get; set; }
